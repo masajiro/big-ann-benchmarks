@@ -32,7 +32,8 @@ class NGT(BaseANN):
         index_params = self._params
         ds = DATASETS[dataset]()
         if ds.d <= 128:
-            pseudo_dimension = 128
+            #pseudo_dimension = 128
+            pseudo_dimension = 192
             subvector_dimension = 2
         elif ds.d <= 256:
             pseudo_dimension = 256
@@ -97,10 +98,13 @@ class NGT(BaseANN):
         self._epsilon = query_args.get("epsilon", 0.1)
         self._edge_size = query_args.get("edge", 0)
         self._exploration_size = query_args.get("blob", 120)
+        self._num_of_probes = query_args.get("probes", 0)
         # only this part is different between t1 and t2
         #self._exact_result_expansion = query_args.get("expansion", 2.0)
         self._exact_result_expansion = 0.0
-        self._index.set(epsilon=self._epsilon, blob_epsilon=0.0, edge_size=self._edge_size,
+        self._index.set(epsilon=self._epsilon, blob_epsilon=0.05, edge_size=self._edge_size,
+        #self._index.set(epsilon=0.04, blob_epsilon=0.0, edge_size=self._edge_size,
+                        num_of_probes=self._num_of_probes,
                         exploration_size=self._exploration_size,
                         exact_result_expansion=self._exact_result_expansion)
         print(f"NGT: epsilon={self._epsilon} edge={self._edge_size} blob={self._exploration_size}")
@@ -119,4 +123,4 @@ class NGT(BaseANN):
         return self._results.getIndex(), self._results.getIndexedIDs(), self._results.getIndexedDistances()
 
     def __str__(self):
-        return f"NGT-T1:q{self._quantization}-b{self._blob}-rs{self._num_of_r_samples}-ri{self._num_of_r_iterations}-e{self._epsilon:.3f}-b{self._exploration_size}"
+        return f"NGT-T1:q{self._quantization}s{self._quantization_sample}b{self._blob}rs{self._num_of_r_samples}ri{self._num_of_r_iterations}rx{self._r_step}ep{self._epsilon:.3f}eg{self._edge_size}bb{self._exploration_size}"
